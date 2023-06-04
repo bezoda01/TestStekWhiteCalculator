@@ -23,21 +23,27 @@ namespace Framework.Elements
                 _menuBar.MenuItem(menuItemPath);
                 return;
             }
-            ClickChildMenuItem(menuItemPath);
+            ClickChildMenuItems(menuItemPath);
         }
 
         private Menu GetChildMenu(Menu menu, string elementName)
         {
-            return menu.ChildMenus.First(m => m.Name.Contains(elementName));
+            return menu.ChildMenus.First(menuItem => menuItem.Name.Contains(elementName));
         }
 
-        private void ClickChildMenuItem(params string[] menuItemPath) 
+        private void ClickChildMenuItems(params string[] menuItemPath) 
         {
             for (int i = 0; i < menuItemPath.Length - 1; i++)
             {
                 var childMenuItem = _menuBar.MenuItem(menuItemPath[i]);
                 GetChildMenu(childMenuItem, menuItemPath[i + 1]).Click();
             }
+        }
+
+        public void ClickChildMenuItem(string menuItemPath) 
+        {
+            FrameworkLogger.Debug($"Click on [{menuItemPath}] menu item at menu:[{Name}]");
+            _menuBar.MenuItem(menuItemPath).Click();
         }
     }
 }

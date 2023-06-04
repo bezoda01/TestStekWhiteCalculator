@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using BoDi;
+using NUnit.Framework;
 using TechTalk.SpecFlow;
+using Test.Constants;
 using Test.Forms;
 
 namespace Test.Steps
@@ -7,61 +9,73 @@ namespace Test.Steps
     [Binding]
     public class MainCalcSteps
     {
-        private readonly MainCalcForm mainCalcForm = new MainCalcForm();
+        private readonly MainCalcForm _mainCalcForm;
+
+        public MainCalcSteps(IObjectContainer objectContainer)
+        {
+            _mainCalcForm = objectContainer.Resolve<MainCalcForm>();
+        }
 
         [Given(@"Main form is open")]
         public void CheckThatMainFormIsPresent() 
         {
-            bool isFormVisible = mainCalcForm.IsFormVisible();
-            Assert.IsTrue(isFormVisible, $"Form {mainCalcForm.FormName} isn't visible");
+            bool isFormVisible = _mainCalcForm.IsFormVisible();
+            Assert.IsTrue(isFormVisible, $"Form {_mainCalcForm.FormName} isn't visible");
         }
 
-        [When(@"Click on numbers \""(.*)\""")]
-        public void clickOnNumber(String splitedNumbers)
+        [Then(@"I click on numbers (.*)")]
+        [When(@"I click on numbers (.*)")]
+        public void ClickOnNumber(string splitedNumbers)
         {
             string[] numbers = splitedNumbers.Split(new char[] {' '}, StringSplitOptions.None);
-            foreach (String number in numbers)
+            foreach (string number in numbers)
             {
-                mainCalcForm.ClickOnNumber(number);
+                _mainCalcForm.ClickOnNumber(number);
             }
            
         }
 
-        [Then(@"the result of math should be \""(.*)\""")]
-        public void checkMathResult(String expectedResult)
+        [Then(@"the result of math should be (.*)")]
+        public void CheckMathResult(string expectedResult)
         {
-            var amount = mainCalcForm.GetResultSum();
+            var amount = _mainCalcForm.GetResultSum();
             Assert.AreEqual(amount, expectedResult, $"The total result isn't correct");
         }
 
-        [When(@"Select option (.*) from (.*) menu bar")]
-        public void selectOrientation(String option, String menuBar)
+        [When(@"I click on (.*) menu bar")]
+        public void OpenMenuBar(string menuBarItemName)
         {
-            mainCalcForm.ChooseOptionFromMenuBar(option, menuBar);
+            _mainCalcForm.ClickOnMenuBar((MenuBarItem)Enum.Parse(typeof(MenuBarItem), menuBarItemName));
         }
 
-        [When(@"Add result to memory")]
-        public void clickOnMPlus()
+        [Then(@"I select option (.*) from View menu bar")]
+        public void SelectOptionFromMenuBar(string option)
         {
-            mainCalcForm.ClickOnMPlus();
+            _mainCalcForm.ChooseOptionFromMenuBar(option);
         }
 
-        [When(@"Get saved result")]
-        public void clickOnMR()
+        [Then(@"I add result to memory")]
+        public void ClickOnMPlus()
         {
-            mainCalcForm.ClickOnMR();
+            _mainCalcForm.ClickOnMPlus();
         }
 
-        [When(@"Click Plus")]
-        public void clickOnPlus()
+        [Then(@"I get saved result")]
+        public void ClickOnMR()
         {
-            mainCalcForm.ClickOnPlus();
+            _mainCalcForm.ClickOnMR();
         }
 
-        [Then(@"Click on equals")]
-        public void clickOnEqual()
+        [Then(@"I click on Plus")]
+        public void ClickOnPlus()
         {
-            mainCalcForm.ClickOnEquals();
+            _mainCalcForm.ClickOnPlus();
+        }
+
+        [When(@"I click on equals")]
+        public void ClickOnEqual()
+        {
+            _mainCalcForm.ClickOnEquals();
         }
     }
 }

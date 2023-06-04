@@ -4,16 +4,19 @@ using Framework.Form;
 using Framework.WindowElement;
 using Test.Constants;
 using TestStack.White.UIItems.Finders;
+using TestStack.White.UIItems.WindowStripControls;
 
 namespace Test.Forms
 {
     internal class MainCalcForm : BaseForm
     {
-        private WFTextView _resultSumTextView => new WFTextView(formWindow.GetElement(SearchCriteria.ByAutomationId("158")), "ResultSumTextView");
+        private WFTextView _resultSumTextView => new WFTextView(formWindow.GetElement(SearchCriteria.ByAutomationId("158")), "Result sum text view");
         private WFMenuBar _orientationMebuBar => new WFMenuBar(formWindow.GetMenuBar(SearchCriteria
             .ByAutomationId("MenuBar")
             .AndByText("Application")),
             "OrientationMenuBar");
+        private WFButton NumberButton(string number) => new WFButton(formWindow.GetElement(SearchCriteria.ByAutomationId($"13{number}")), "Number Button");
+        private WFButton ViewOptionButton(string option) => new WFButton(formWindow.GetElement(SearchCriteria.ByText(option)), $"{option} Button");
 
         public MainCalcForm() :
             base(new WFWindow(WFApplication.GetInstance().GetWindowByName(WindowConstants.CalculatorMainWindow)),
@@ -21,9 +24,9 @@ namespace Test.Forms
         {
         }
 
-        public void ClickOnNumber(String number) 
+        public void ClickOnNumber(string number) 
         {
-            new WFButton(formWindow.GetElement(SearchCriteria.ByAutomationId($"13{number}")), $"{number} Button").Click();
+            NumberButton(number).Click();
         }
 
         public string GetResultSum() 
@@ -31,10 +34,14 @@ namespace Test.Forms
             return _resultSumTextView.GetText();
         }
 
-        public void ChooseOptionFromMenuBar(String option, String menuBar) 
+        public void ClickOnMenuBar(MenuBarItem menuBarItem)
         {
-            _orientationMebuBar.ClickChildMenuItem(menuBar);
-            new WFButton(formWindow.GetElement(SearchCriteria.ByText(option)), $"{option} Button").Click();
+            _orientationMebuBar.ClickChildMenuItem(menuBarItem.ToString());
+        }
+
+        public void ChooseOptionFromMenuBar(string option) 
+        {
+            ViewOptionButton(option).Click();
         }
 
         public void ClickOnMPlus()

@@ -1,6 +1,4 @@
-﻿using Castle.Core.Internal;
-using Framework.Logging;
-using TestStack.White.UIItems.Finders;
+﻿using Framework.Logging;
 using TestStack.White.UIItems.MenuItems;
 using TestStack.White.UIItems.WindowStripControls;
 
@@ -30,7 +28,7 @@ namespace Framework.Elements
 
         private Menu GetChildMenu(Menu menu, string elementName)
         {
-            return menu.ChildMenus.First(m => m.Name.Contains(elementName));
+            return menu.ChildMenus.First(menuItem => menuItem.Name.Contains(elementName));
         }
 
         private void ClickChildMenuItems(params string[] menuItemPath) 
@@ -42,10 +40,10 @@ namespace Framework.Elements
             }
         }
 
-        public void ClickChildMenuItem(params string[] menuItemPath) 
+        public void ClickChildMenuItem(string menuItemPath) 
         {
-            FrameworkLogger.Debug($"Click on [{menuItemPath[0]}] menu item at menu:[{Name}]");
-            _menuBar.MenuItem(menuItemPath[0]).Click();
+            FrameworkLogger.Debug($"Click on [{menuItemPath}] menu item at menu:[{Name}]");
+            _menuBar.MenuItem(menuItemPath).Click();
         }
     }
 }
